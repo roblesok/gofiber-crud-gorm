@@ -6,7 +6,14 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/roblesok/gorm-fiber-crud/repository"
 	"github.com/roblesok/gorm-fiber-crud/router"
+	"github.com/roblesok/gorm-fiber-crud/service"
+)
+
+var (
+	pgRepo      repository.BookRepository = repository.NewPgRepository()
+	bookService service.BookService       = service.NewBookService(pgRepo)
 )
 
 func main() {
@@ -18,7 +25,7 @@ func main() {
 
 	api := app.Group("/api")
 
-	router.BookRouter(api)
+	router.BookRouter(api, bookService)
 
 	log.Fatal(app.Listen(port))
 }
